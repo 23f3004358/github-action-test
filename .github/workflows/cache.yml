@@ -1,0 +1,31 @@
+name: CI with Cache
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        id: cache-step
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache-demo
+          key: cache-6a30922
+
+      - name: prime-cache-6a30922
+        run: |
+          if [ "${{ steps.cache-step.outputs.cache-hit }}" = "true" ]; then
+            echo "Cache was restored (HIT)"
+          else
+            echo "Cache was not found (MISS)"
+            mkdir -p ~/.cache-demo
+            echo "Hello from cache" > ~/.cache-demo/demo.txt
+          fi
